@@ -60,12 +60,30 @@ def chunk_documents(documents,chunk_size=800,chunk_overlap=0):
 
     return chunks
 
+def create_vector_embeddings_vectorstore(chunks,persist_directory="db/chroma_db"):
+    print("setting up embeddings for chunks and storing in ChromaDB...")
+
+    #select the embedding model
+    embedding_model=OpenAIEmbeddings(model="text-embedding-3-small")
+
+    #creating the chromaVECTOR STORE
+    vector_store=Chroma.from_documents(
+        documents=chunks,
+        embedding=embedding_model,
+        persist_directory=persist_directory,
+        collection_metadata={"hnsw:space":"cosine"}
+    )
+
+    print(f"\nVector Created in {persist_directory}")
+    return vector_store
+
 
 def main():
-    #1 Loading the Documents
+    
     print("|STARTING INGESTION PIPELINE|")
-    documents=load_documents(docs_path="docs")
-    chunks=chunk_documents(documents)
+    documents=load_documents(docs_path="docs") #1 Loading the Documents
+    chunks=chunk_documents(documents)          #2 Chunking them
+    create_vector_embeddings_vectorstore(chunks)#convert to vector embeddings and store in vectorStore
 
 if __name__ == "__main__":
     main()
