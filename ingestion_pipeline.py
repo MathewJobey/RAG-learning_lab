@@ -1,7 +1,6 @@
 import os
 from langchain_community.document_loaders import TextLoader, DirectoryLoader
 from dotenv import load_dotenv
-
 from langchain_text_splitters import CharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
@@ -20,12 +19,32 @@ def load_documents(docs_path="docs"):
     loader=DirectoryLoader(
         path=docs_path,
         loader_cls=TextLoader,
-        glob="*.txt"
+        glob="*.txt",
+        loader_kwargs= {
+            "encoding":"utf-8"#specify encoding otherwise it wont work
+        }
     )
 
+    #load the documents into documents
+    documents=loader.load() #documents is a list [] with elements called documents(pagecontent,metadata)
+
+    #check if files are there in documents
+    if(len(documents)==0):
+        raise FileNotFoundError(f"no .txt files exist in {docs_path}")
+    
+    #show a few contents present in the documents list
+    for i,doc in enumerate(documents[:2]):
+        print(f"\nDocument{i+1}")
+        print(f"Content Length: {len(doc.page_content)}")
+        print(f"Content: {doc.page_content[0:100]}")
+        print(f"Source: {doc.metadata["source"]}")
+
+    return documents
+
 def main():
-    print("Starting ingestion pipeline...")
-    load_documents()
+    #1 Loading the Documents
+    print("|STARTING INGESTION PIPELINE|")
+    documents=load_documents(docs_path="docs")
 
 
 if __name__ == "__main__":
