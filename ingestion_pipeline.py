@@ -41,11 +41,31 @@ def load_documents(docs_path="docs"):
 
     return documents
 
+def chunk_documents(documents,chunk_size=800,chunk_overlap=0):
+    print("Preparing to chunk the documents...")
+
+    #initialize the char text splitter
+    text_splitter=CharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+    )
+
+    chunks=text_splitter.split_documents(documents) #create chunks instance
+
+    for i,chunk in enumerate(chunks[:5]):
+        print(f"\nChunk{i+1}")
+        print(f"Source: {chunk.metadata["source"]}")
+        print(f"Length: {len(chunk.page_content)}")
+        print(f"Content: {chunk.page_content}")
+
+    return chunks
+
+
 def main():
     #1 Loading the Documents
     print("|STARTING INGESTION PIPELINE|")
     documents=load_documents(docs_path="docs")
-
+    chunks=chunk_documents(documents)
 
 if __name__ == "__main__":
     main()
