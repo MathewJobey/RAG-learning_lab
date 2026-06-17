@@ -41,7 +41,7 @@ def load_documents(docs_path="docs"):
 
     return documents
 
-def chunk_documents(documents,chunk_size=800,chunk_overlap=0):
+def chunk_documents(documents,chunk_size=500,chunk_overlap=0):
     print("Preparing to chunk the documents...")
 
     #initialize the char text splitter
