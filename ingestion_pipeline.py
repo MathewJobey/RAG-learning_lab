@@ -2,7 +2,7 @@ import os
 from langchain_community.document_loaders import TextLoader, DirectoryLoader
 from dotenv import load_dotenv
 from langchain_text_splitters import CharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
 load_dotenv()
@@ -64,7 +64,7 @@ def create_vector_embeddings_vectorstore(chunks,persist_directory="db/chroma_db"
     print("setting up embeddings for chunks and storing in ChromaDB...")
 
     #select the embedding model
-    embedding_model=OpenAIEmbeddings(model="text-embedding-3-small")
+    embedding_model=HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
     #creating the chromaVECTOR STORE
     vector_store=Chroma.from_documents(
@@ -75,6 +75,7 @@ def create_vector_embeddings_vectorstore(chunks,persist_directory="db/chroma_db"
     )
 
     print(f"\nVector Created in {persist_directory}")
+
     return vector_store
 
 
